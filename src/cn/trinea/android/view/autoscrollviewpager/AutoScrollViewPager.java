@@ -67,6 +67,9 @@ public class AutoScrollViewPager extends ViewPager {
     private boolean                isAutoScroll                = false;
     private boolean                isStopByTouch               = false;
     private float                  touchX                      = 0f, downX = 0f;
+    private float                  touchY                      = 0f;
+    
+    private float touchY = 0f, downY = 0f;
     private CustomDurationScroller scroller                    = null;
 
     public static final int        SCROLL_WHAT                 = 0;
@@ -220,7 +223,17 @@ public class AutoScrollViewPager extends ViewPager {
                 return super.dispatchTouchEvent(ev);
             }
         }
-        getParent().requestDisallowInterceptTouchEvent(true);
+        /**
+        * based on https://github.com/youfacepalm comment to fix the issue 
+        * "don't consume touch event when scroll up or down #29"
+        */
+        if (consumeTouch) {
+            getParent().requestDisallowInterceptTouchEvent(true);
+        } else {
+            getParent().requestDisallowInterceptTouchEvent(false);
+            if (stopScrollWhenTouch)
+                startAutoScroll();
+        }
 
         return super.dispatchTouchEvent(ev);
     }
