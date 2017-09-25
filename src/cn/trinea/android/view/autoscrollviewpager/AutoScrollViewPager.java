@@ -226,6 +226,12 @@ public class AutoScrollViewPager extends ViewPager {
         * based on https://github.com/youfacepalm comment to fix the issue 
         * "don't consume touch event when scroll up or down #29"
         */
+        boolean consumeTouch = false;
+        if (action == MotionEvent.ACTION_DOWN) {
+            touchY = ev.getY();
+        } else if (action == MotionEvent.ACTION_UP) {
+            consumeTouch = Math.abs(touchY - ev.getY()) > 0;
+        }
         if (consumeTouch) {
             getParent().requestDisallowInterceptTouchEvent(true);
         } else {
